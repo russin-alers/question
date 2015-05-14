@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, request, redirect, g
 from flask.ext.login import login_user, logout_user, login_required
 from app.forms import AddQuestionForm, LoginForm, AnswerForm
-from app.models import Questions, Answers, User, db_session, login_manager
+from app.models import Questions, Answers, User, Like, db_session, login_manager
 from app import app
 
 @app.route('/')
@@ -97,6 +97,24 @@ def register():
                                    title='Sign up')
     return render_template('login_form.html', form=form, title='Register')
 
+@app.route('/like/<answer_id>')
+@login_required
+def like(answer_id):
+    user = g.user.id
+    answer = Answers.query.filter_by(id=answer_id).first()
+    if Like.query.filter_by(user=user, answer=answer_id).first():
+        flash('Already voted')
+        return redirect(url_for('main_page'))
+    elif answer:
+        vote = Like(answer=answer_id, user=user)
+        db_session.add(vote)
+        answer.likes += 1
+        db_session.commit()
+        flash("You'r vote successfully submitted")
+        return redirect(url_for("main_page"))
+    else:
+        flash('This answer not available for voting')
+        return redirect(url_for('main_page'))
 
 @app.route('/logout')
 def logout():

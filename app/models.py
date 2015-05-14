@@ -3,20 +3,17 @@ from sqlalchemy import Column, Integer, String, ForeignKey, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, scoped_session, sessionmaker
 from app import app
-#db configurations
 
-# connecting to DB
+
 import os
 engine = create_engine('sqlite:///' + os.path.dirname(app.root_path) +
                        '/questions.db', echo=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
-# using declarative method
 Base = declarative_base()
 Base.query = db_session.query_property()
 
-# login settings
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -78,17 +75,29 @@ class Answers(Base):
     answer = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     question_id = Column(Integer, ForeignKey('questions.id'), nullable=False)
+    like = relationship('Like')
+    likes = Column(Integer)
 
     def __init__(self, answer, user_id, question_id):
         self.answer = answer
         self.user_id = user_id
         self.question_id = question_id
+        self.likes = 0
 
     def get_user(self):
         return User.query.filter_by(id=self.user_id).first().name
 
+class Like(Base):
+    __tablename__ = 'likes'
+    id = Column(Integer, primary_key=True)
+    answer = Column(Integer, ForeignKey('answers.id'), nullable=False)
+    user = Column(Integer, ForeignKey('users.id'), nullable=False)
 
-# decelerating models
+    def __init__(self, answer, user):
+        self.answer = answer
+        self.user = user
+
+
 def init_db():
     Base.metadata.create_all(bind=engine)
 
