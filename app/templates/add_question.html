@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5 col-md-offset-3">
+                <form action="" method="post" name="add_question">
+                    {{ form.csrf_token }}
+                    {% for field in form  %}
+                    {% if field.errors %}
+                        <ul class=" list-unstyled">
+                        {% for error in field.errors %}
+                          <li class="list-group-item-danger">{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                        <div class="form-group has-error">
+                    {% else %}
+                        <div class="form-group ">
+                    {% endif %}
+                    {% if field.type != "CSRFTokenField" %}
+                        <label >{{ field.label() }} </label>
+                    {% endif %}
+                        {{ field(class="form-control") }}
+                    </div>
+                    <br>
+                    {% endfor %}
+                    <input type="submit" class="btn btn-primary btn-group-justified" value="Ask">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

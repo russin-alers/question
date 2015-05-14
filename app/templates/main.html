@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+        <div class="col-md-8 col-md-offset-2">
+
+            {% if questions %}
+                {% for question in questions %}
+                    {% include 'question.html' %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

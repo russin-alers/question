@@ -1,0 +1,28 @@
+{% block question %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <ul class="nav">
+            <li><h4><b> Question: {{ question.question }}</b></h4></li>
+            <li>Answers: <span class="badge"> {{ question.answers|count }}</span></li>
+        </ul>
+    </div>
+
+    <div class="panel-body">
+    {% if question.details %}
+        <p class="list-group-item-text">
+            <b>Detatils:</b> {{ question.details }}
+        </p>
+    {% endif %}
+        <p class="text-right help-block">
+            Posted by: {{ question.get_user() }}
+        </p>
+    </div>
+
+    <div class="panel-footer" >
+        <a href="answer/{{ question.id }}">
+            <button class="btn btn-default btn-primary btn-group-justified"> Details </button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}
