@@ -31,6 +31,7 @@ class User(Base):
     password = Column(String)
     asked_questions = relationship('Questions')
     answers = relationship('Answers')
+    like = relationship('Like')
 
     def __init__(self, name, password):
         self.name = name
